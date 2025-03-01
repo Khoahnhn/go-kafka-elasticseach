@@ -1,4 +1,4 @@
-.PHONY: run build clean
+.PHONY: run build clean chmod run-migration-up run-migration-down check-version-migration force-version goto-version
 
 run:
 	@echo "Starting Go server..."
@@ -12,3 +12,21 @@ build:
 clean:
 	@echo "Cleaning up..."
 	@rm -f app #Linux/macOS
+
+#chmod:
+#	@chmod +x scripts/migrate.sh #Linux/MacOS
+#
+#run-migration-up:
+#	@scripts/migrate.sh up
+#
+#run-migration-down:
+#	@scripts/migrate.sh down
+#
+#check-version-migration:
+#	@scripts/migrate.sh version
+#
+#force-version:
+#	@scripts/migrate.sh force 2
+#
+#goto-version:
+#	@scripts/migrate.sh goto 3

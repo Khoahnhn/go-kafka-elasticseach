@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/Khoahnhn/go-kafka-elastichsearch/api"
+	"github.com/Khoahnhn/go-kafka-elastichsearch/pkg/database"
 	"github.com/Khoahnhn/go-kafka-elastichsearch/settings/env"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -19,6 +20,9 @@ func main() {
 	apiV1 := router.Group(env.GetEnv("APP_PREFIX", "api/v1"))
 
 	api.RegisterRoutes(apiV1)
+
+	// Connect Database
+	database.InitDatabase()
 
 	// khoi dong server
 	port := env.GetEnv("APP_PORT", "8080")
