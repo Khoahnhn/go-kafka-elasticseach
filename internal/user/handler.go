@@ -1,26 +1,80 @@
 package user
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/Khoahnhn/go-kafka-elastichsearch/internal/user/request"
+	"github.com/gin-gonic/gin"
+	"math"
+	"net/http"
+	"strconv"
+)
 
 func GetUsers(c *gin.Context) {
-	c.JSON(200, gin.H{"message": "Get all users"})
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+
+	users, total, err := GetUsersService(page, pageSize)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data":      users,
+		"total":     total,
+		"page":      page,
+		"pageSize":  pageSize,
+		"totalPage": int(math.Ceil(float64(total) / float64(pageSize))),
+	})
 }
 
 func GetUserByID(c *gin.Context) {
 	id := c.Param("id")
-	c.JSON(200, gin.H{"message": "Get user " + id})
+	user, err := GetUserByIDService(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+	c.JSON(http.StatusOK, user)
 }
 
 func CreateUser(c *gin.Context) {
-	c.JSON(201, gin.H{"message": "Create user"})
+	var createUserRequest request.CreateUserRequest
+	if err := c.ShouldBindJSON(&createUserRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	createUser, err := CreateUserService(createUserRequest)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": createUser})
 }
 
 func RemoveUser(c *gin.Context) {
 	id := c.Param("id")
-	c.JSON(200, gin.H{"message": "Remove user " + id})
+	err := DeleteUserService(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "User deleted successfully"})
 }
 
 func UpdateUser(c *gin.Context) {
 	id := c.Param("id")
-	c.JSON(200, gin.H{"message": "Update user " + id})
+	var updateUserRequest request.UpdateUserRequest
+	if err := c.ShouldBindJSON(&updateUserRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updatedUser, err := UpdateUserService(id, updateUserRequest)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, updatedUser)
 }
