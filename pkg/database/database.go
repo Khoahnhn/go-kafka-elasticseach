@@ -5,6 +5,7 @@ import (
 	"github.com/Khoahnhn/go-kafka-elastichsearch/settings/env"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"time"
 )
@@ -31,7 +32,10 @@ func InitDatabase() {
 
 	var err error
 	for i := 0; i < 5; i++ { // Thử kết nối lại 5 lần
-		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+			//Logger: logger.Default.LogMode(logger.Silent),
+			Logger: logger.Default.LogMode(logger.Warn),
+		})
 		if err == nil {
 			break
 		}
