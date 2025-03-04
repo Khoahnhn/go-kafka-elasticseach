@@ -48,3 +48,7 @@ func UpdateUserService(id string, userData request.UpdateUserRequest) (User, err
 func DeleteUserService(id string) error {
 	return DeleteUserRepository(id)
 }
+
+func SearchUserService(query string, filter map[string]string) ([]User, error) {
+	return SearchUserRepository(query, filter)
+}

@@ -78,3 +78,24 @@ func UpdateUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, updatedUser)
 }
+
+func SearchUser(c *gin.Context) {
+	query := c.Query("q")
+	if query == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Query parameter 'q' is required"})
+		return
+	}
+
+	filters := map[string]string{
+		"wildcard":      c.Query("wildcard"),
+		"email":         c.Query("email"),
+		"created_after": c.Query("created_after"),
+	}
+
+	users, err := SearchUserService(query, filters)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}

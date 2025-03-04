@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/Khoahnhn/go-kafka-elastichsearch/api"
+	"github.com/Khoahnhn/go-kafka-elastichsearch/elasticsearch"
 	"github.com/Khoahnhn/go-kafka-elastichsearch/pkg/database"
 	"github.com/Khoahnhn/go-kafka-elastichsearch/settings/env"
 	"github.com/gin-gonic/gin"
@@ -23,6 +24,9 @@ func main() {
 
 	// Connect Database
 	database.InitDatabase()
+
+	// Connect Elasticsearch
+	elasticsearch.InitElasticSearch()
 
 	// khoi dong server
 	port := env.GetEnv("APP_PORT", "8080")
