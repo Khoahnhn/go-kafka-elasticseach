@@ -1,0 +1,13 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/*.log  # Đọc tất cả log trong thư mục này
+
+output.logstash:
+  hosts: ["logstash:5044"]  # Gửi log đến Logstash
+
+#output.elasticsearch: # Gửi log trực tiếp đến elasticsearch
+#  hosts: ["http://elasticsearch:9200"]
+#  username: "elastic"
+#  password: "changeme"
